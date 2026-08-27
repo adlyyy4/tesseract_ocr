@@ -33,4 +33,4 @@ Runner/GeneratedPluginRegistrant.*
 !default.perspectivev3
 
 # Swift Package Manager resolution state (regenerated per machine).
-**/Runner.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+**/xcshareddata/swiftpm/Package.resolved
