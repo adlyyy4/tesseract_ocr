@@ -6,3 +6,9 @@
 .pub/
 
 build/
+
+# IDE / editor metadata
+*.iml
+.settings/
+.classpath
+.project
