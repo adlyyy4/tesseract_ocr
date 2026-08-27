@@ -4,7 +4,7 @@ version '1.0'
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -26,7 +26,12 @@ apply plugin: 'com.android.library'
 
 android {
     namespace "io.paratoner.flutter_tesseract_ocr"
-    compileSdkVersion 34
+    compileSdk 34
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
     
      
     defaultConfig {
@@ -34,7 +39,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
-    lintOptions {
+    lint {
         disable 'InvalidPackage'
     }
     // packagingOptions{
