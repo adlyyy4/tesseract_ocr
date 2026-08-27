@@ -11,20 +11,17 @@ import 'package:path/path.dart';
 class FlutterTesseractOcr {
   static const String TESS_DATA_CONFIG = 'assets/tessdata_config.json';
   static const String TESS_DATA_PATH = 'assets/tessdata';
-  static const MethodChannel _channel =
-      const MethodChannel('flutter_tesseract_ocr');
+  static const MethodChannel _channel = const MethodChannel('flutter_tesseract_ocr');
 
   /// image to  text
   ///```
   /// String _ocrText = await FlutterTesseractOcr.extractText(url, language: langs, args: {
   ///    "preserve_interword_spaces": "1",});
   ///```
-  static Future<String> extractText(String imagePath,
-      {String? language, Map? args}) async {
+  static Future<String> extractText(String imagePath, {String? language, Map? args}) async {
     assert(await File(imagePath).exists(), true);
     final String tessData = await _loadTessData();
-    final String extractText =
-        await _channel.invokeMethod('extractText', <String, dynamic>{
+    final String extractText = await _channel.invokeMethod('extractText', <String, dynamic>{
       'imagePath': imagePath,
       'tessData': tessData,
       'language': language,
@@ -38,12 +35,10 @@ class FlutterTesseractOcr {
   /// String _ocrHocr = await FlutterTesseractOcr.extractText(url, language: langs, args: {
   ///    "preserve_interword_spaces": "1",});
   ///```
-  static Future<String> extractHocr(String imagePath,
-      {String? language, Map? args}) async {
+  static Future<String> extractHocr(String imagePath, {String? language, Map? args}) async {
     assert(await File(imagePath).exists(), true);
     final String tessData = await _loadTessData();
-    final String extractText =
-        await _channel.invokeMethod('extractHocr', <String, dynamic>{
+    final String extractText = await _channel.invokeMethod('extractHocr', <String, dynamic>{
       'imagePath': imagePath,
       'tessData': tessData,
       'language': language,
@@ -73,8 +68,7 @@ class FlutterTesseractOcr {
     return appDirectory.path;
   }
 
-  static Future _copyTessDataToAppDocumentsDirectory(
-      String tessdataDirectory) async {
+  static Future _copyTessDataToAppDocumentsDirectory(String tessdataDirectory) async {
     final String config = await rootBundle.loadString(TESS_DATA_CONFIG);
     Map<String, dynamic> files = jsonDecode(config);
     for (var file in files["files"]) {
