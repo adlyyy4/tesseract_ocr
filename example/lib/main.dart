@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,10 +8,12 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -21,23 +22,22 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Tesseract Demo'),
+      home: const MyHomePage(title: 'Tesseract Demo'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   String _ocrText = '';
-  String _ocrHocr = '';
   Map<String, String> tessimgs = {
     "kor":
         "https://raw.githubusercontent.com/khjde1207/tesseract_ocr/master/example/assets/test1.png",
@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
     "ch_sim": "https://tesseract.projectnaptha.com/img/chi_sim.png",
     "ru": "https://tesseract.projectnaptha.com/img/rus.png",
   };
-  var LangList = ["kor", "eng", "deu", "chi_sim"];
+  var langList = ["kor", "eng", "deu", "chi_sim"];
   var selectList = ["eng", "kor"];
   String path = "";
   bool bload = false;
@@ -57,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> writeToFile(ByteData data, String path) {
     final buffer = data.buffer;
-    return new File(path).writeAsBytes(
+    return File(path).writeAsBytes(
         buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   }
 
@@ -71,21 +71,21 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _ocr(url) async {
-    if (selectList.length <= 0) {
-      print("Please select language");
+    if (selectList.isEmpty) {
+      debugPrint("Please select language");
       return;
     }
     path = url;
     if (kIsWeb == false &&
-        (url.indexOf("http://") == 0 || url.indexOf("https://") == 0)) {
+        (url.startsWith("http://") || url.startsWith("https://"))) {
       Directory tempDir = await getTemporaryDirectory();
-      HttpClient httpClient = new HttpClient();
+      HttpClient httpClient = HttpClient();
       HttpClientRequest request = await httpClient.getUrl(Uri.parse(url));
       HttpClientResponse response = await request.close();
       Uint8List bytes = await consolidateHttpClientResponseBytes(response);
       String dir = tempDir.path;
-      print('$dir/test.jpg');
-      File file = new File('$dir/test.jpg');
+      debugPrint('$dir/test.jpg');
+      File file = File('$dir/test.jpg');
       await file.writeAsBytes(bytes);
       url = file.path;
     }
@@ -111,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // print('init : ${after1.difference(before1).inMilliseconds}');
     //  ========== Test performance  ==========
 
-    // _ocrHocr =
+    // String _ocrHocr =
     //     await FlutterTesseractOcr.extractHocr(url, language: langs, args: {
     //   "preserve_interword_spaces": "1",
     // });
@@ -147,41 +147,39 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Row(
                   children: [
-                    Container(
-                      child: ElevatedButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return SimpleDialog(
-                                    title: const Text('Select Url'),
-                                    children: tessimgs
-                                        .map((key, value) {
-                                          return MapEntry(
-                                              key,
-                                              SimpleDialogOption(
-                                                  onPressed: () {
-                                                    urlEditController.text =
-                                                        value;
-                                                    setState(() {});
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Row(
-                                                    children: [
-                                                      Text(key),
-                                                      Text(" : "),
-                                                      Flexible(
-                                                          child: Text(value)),
-                                                    ],
-                                                  )));
-                                        })
-                                        .values
-                                        .toList(),
-                                  );
-                                });
-                          },
-                          child: Text("urls")),
-                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SimpleDialog(
+                                  title: const Text('Select Url'),
+                                  children: tessimgs
+                                      .map((key, value) {
+                                        return MapEntry(
+                                            key,
+                                            SimpleDialogOption(
+                                                onPressed: () {
+                                                  urlEditController.text =
+                                                      value;
+                                                  setState(() {});
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    Text(key),
+                                                    Text(" : "),
+                                                    Flexible(
+                                                        child: Text(value)),
+                                                  ],
+                                                )));
+                                      })
+                                      .values
+                                      .toList(),
+                                );
+                              });
+                        },
+                        child: Text("urls")),
                     Expanded(
                       child: TextField(
                         decoration: InputDecoration(
@@ -200,10 +198,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 Row(
                   children: [
-                    ...LangList.map((e) {
+                    ...langList.map((e) {
                       return Row(children: [
                         Checkbox(
-                            value: selectList.indexOf(e) >= 0,
+                            value: selectList.contains(e),
                             onChanged: (v) async {
                               // dynamic add Tessdata
                               if (kIsWeb == false) {
@@ -224,10 +222,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                 if (!isInstalled) {
                                   bDownloadtessFile = true;
                                   setState(() {});
-                                  HttpClient httpClient = new HttpClient();
+                                  HttpClient httpClient = HttpClient();
                                   HttpClientRequest request =
                                       await httpClient.getUrl(Uri.parse(
-                                          'https://github.com/tesseract-ocr/tessdata/raw/main/${e}.traineddata'));
+                                          'https://github.com/tesseract-ocr/tessdata/raw/main/$e.traineddata'));
                                   HttpClientResponse response =
                                       await request.close();
                                   Uint8List bytes =
@@ -235,15 +233,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                           response);
                                   String dir = await FlutterTesseractOcr
                                       .getTessdataPath();
-                                  print('$dir/${e}.traineddata');
-                                  File file = new File('$dir/${e}.traineddata');
+                                  debugPrint('$dir/$e.traineddata');
+                                  File file = File('$dir/$e.traineddata');
                                   await file.writeAsBytes(bytes);
                                   bDownloadtessFile = false;
                                   setState(() {});
                                 }
-                                print(isInstalled);
+                                debugPrint('$isInstalled');
                               }
-                              if (selectList.indexOf(e) < 0) {
+                              if (!selectList.contains(e)) {
                                 selectList.add(e);
                               } else {
                                 selectList.remove(e);
@@ -252,21 +250,21 @@ class _MyHomePageState extends State<MyHomePage> {
                             }),
                         Text(e)
                       ]);
-                    }).toList(),
+                    }),
                   ],
                 ),
                 Expanded(
                     child: ListView(
                   children: [
-                    path.length <= 0
+                    path.isEmpty
                         ? Container()
-                        : path.indexOf("http") >= 0
+                        : path.contains("http")
                             ? Image.network(path)
                             : Image.file(File(path)),
                     bload
                         ? Column(children: [CircularProgressIndicator()])
                         : Text(
-                            '$_ocrText',
+                            _ocrText,
                           ),
                   ],
                 ))
