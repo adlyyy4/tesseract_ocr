@@ -57,6 +57,13 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
 
+  # Exercise the Swift package (ios/flutter_tesseract_ocr/Package.swift) rather than the
+  # podspec, so the example verifies the SPM path regardless of the machine's
+  # `flutter config --enable-swift-package-manager` setting. Project-level config wins
+  # over global config; the FLUTTER_SWIFT_PACKAGE_MANAGER env var does not.
+  config:
+    enable-swift-package-manager: true
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
