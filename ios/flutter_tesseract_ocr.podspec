@@ -17,7 +17,9 @@ Tesseract 4 adds a new neural net (LSTM) based OCR engine which is focused on li
   # 4.x dropped CocoaPods support entirely, so the pod path is capped at the 3.x line.
   # The Swift package (see flutter_tesseract_ocr/Package.swift) uses 4.0.1 instead.
   s.dependency 'SwiftyTesseract', '~> 3.1'
-  s.platform = :ios, '15.0'
+  # Deliberately no s.platform: the pod must inherit the consuming Podfile's deployment
+  # target. Pinning it lower builds this target below SwiftyTesseract (which does inherit),
+  # and Swift then refuses to import a module built for a higher minimum.
   s.swift_version = '5.0'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   # s.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.2' }
